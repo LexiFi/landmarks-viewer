@@ -1,0 +1,4 @@
+A HTML viewer for the profiling library 'landmarks'
+
+This package contains a web-application that is able to load the JSON
+export produced by the 'landmarks' library.
