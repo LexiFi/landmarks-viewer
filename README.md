@@ -18,7 +18,7 @@ opam install landmarks-viewer
 ```
 git clone https://github.com/LexiFi/landmarks.git
 cd landmarks
-jbuilder build @install
+dune build @install
 ```
 
 * Launching the viewer (when available):
@@ -28,7 +28,7 @@ x-www-browser "$(ocamlfind query landmarks-viewer)/landmarks_viewer.html"
 You may want to replace "x-www-browser" with your system's way to
 invoke your favorite web-browser from the command line. It has
 to support javascript.
-      
+
 About
 -----
 
