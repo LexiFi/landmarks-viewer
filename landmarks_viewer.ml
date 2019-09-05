@@ -160,10 +160,10 @@ module Graph = struct
 
   let string_of_graph s = JSON.stringify (graph_to_js s)
 
-  let has_sys_time {nodes} =
+  let has_sys_time {nodes; _} =
     Array.exists (fun {sys_time; _} -> sys_time <> 0.0) nodes
 
-  let has_allocated_bytes {nodes} =
+  let has_allocated_bytes {nodes; _} =
     Array.exists (fun {allocated_bytes; _} -> allocated_bytes <> 0.0) nodes
 
   let aggregated_table graph =
@@ -246,7 +246,7 @@ module TreeView = struct
     Node.append_child inside ul;
     generate render expand children ul None root |> ignore
 
-  let callgraph inside ({Graph.nodes} as graph) proj =
+  let callgraph inside ({Graph.nodes; _} as graph) proj =
     let root =
       if Array.length nodes = 0 then
         error "callgraph: no root"
@@ -319,7 +319,6 @@ module TreeView = struct
     let depth = Landmark.Graph.depth graph in
     let expand node =
       let reference = reference node in
-      let open Graph in
       depth node <= 1 || proj node > 0.1 *. proj reference
     in
     let children {Graph.sons; _} =
