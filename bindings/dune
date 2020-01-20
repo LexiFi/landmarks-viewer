@@ -1,0 +1,5 @@
+(library
+ (name js_core)
+ (libraries gen_js_api)
+ (preprocess (pps gen_js_api.ppx))
+ (modes byte))
