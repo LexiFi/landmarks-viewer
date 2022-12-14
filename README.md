@@ -1,6 +1,11 @@
 Landmarks-viewer: A web front-end for landmarks library 
 =======================================================
 
+Warning
+------------
+This fork is a dirty patch to make the viewer work (I hope).
+I have never used *js_of_ocaml* or *gen_js_api* before.
+
 [*Landmarks*](https://github.com/LexiFi/landmarks) is a simple profiling 
 library for OCaml. The *landmarks-viewer* is a simple web-application that
 allows to browser the result of a profiling session using the *landmarks* 
@@ -9,17 +14,12 @@ library.
 Installation
 ------------
 
-0. Pin the master branch of gen_js_api: 
-```
-git clone https://github.com/LexiFi/gen_js_api.git
-opam pin gen_js_api gen_js_api
-```
-1. Build by running `dune build --profile release` inside the landmarks-viewer directory.
-2. Open the web app located in `_build/install/default/lib/landmarks-viewer/landmarks_viewer.html` in browser.
+1. Build by running `./patch.sh` inside the landmarks-viewer directory.
+2. Open the web app located in `out/landmarks_viewer.html` in browser.
 2. Or deploy the following to files on a web server: 
 ```
-  _build/install/default/lib/landmarks-viewer/landmarks_viewer.html
-  _build/install/default/lib/landmarks-viewer/landmarks_viewer.js
+  out/landmarks_viewer.html
+  out/landmarks_viewer.js
 ```
       
 About

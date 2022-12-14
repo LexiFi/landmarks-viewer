@@ -1,12 +1,12 @@
 (executable
   (name landmarks_viewer)
   (js_of_ocaml
-     (flags --pretty --disable genprim)
+     (flags :standard)
   )
   (libraries landmarks gen_js_api js_core)
   (link_flags -no-check-prims)
   (preprocess (pps gen_js_api.ppx))
-  (modes byte)
+  (modes js)
 )
 
 (install 
