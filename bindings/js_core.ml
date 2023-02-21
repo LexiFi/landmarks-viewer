@@ -278,4 +278,4 @@ module GlobalVariables = [%js :
 
   val console: Console.t
   [@@js.global]
-  ]
+]
