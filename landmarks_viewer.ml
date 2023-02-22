@@ -5,10 +5,10 @@
 open Js_core
 
 let error s =
-  Js_core.alert ("Error: "^s);
+  GlobalVariables.alert ("Error: "^s);
   failwith s
 
-let document = Window.document window
+let document = Window.document GlobalVariables.window
 
 module Helper = struct
   let removeAll element =
@@ -139,21 +139,32 @@ module Graph = struct
     | Sampler [@js "sampler"]
   [@@js] [@@js.enum]
 
+  let rec floatarray_of_js (objs: Ojs.t): floatarray =
+    let n = Ojs.int_of_js (Ojs.get_prop_ascii objs "length") in
+    Float.Array.init n (fun i -> Ojs.float_of_js (Ojs.array_get objs i))
+  and floatarray_to_js (arr: floatarray): Ojs.t =
+    let n = Float.Array.length arr in
+    let a = Ojs.array_make n in
+    for i = 0 to n - 1 do
+      Ojs.array_set a i (Ojs.float_to_js (Float.Array.get arr i))
+    done;
+    a
+
   type node = Landmark.Graph.node = {
     id: int;
     kind : kind;
-    landmark_id : int;
+    landmark_id : string;
     name: string;
     location: string;
     calls: int;
     time: float;
-    sons: id list;
+    children: id list;
     sys_time: float;
     allocated_bytes: float;
-    distrib: float array;
+    distrib: floatarray;
   } [@@js] [@@js.verbatim_names]
 
-  type graph = Landmark.Graph.graph = {nodes: node array; label: string} [@@js]
+  type graph = Landmark.Graph.graph = {nodes: node array; label: string; root: id} [@@js]
 
   let graph_of_string s =
     try graph_of_js (JSON.parse s) with Ojs_exn.Error _ -> error "Invalid input format."
@@ -308,7 +319,7 @@ module TreeView = struct
          Node.append_child span span_time
        | _, Graph.Sampler ->
          let text =
-           Printf.sprintf " (%d values) " (Array.length distrib)
+           Printf.sprintf " (%d values) " (Float.Array.length distrib)
          in
          let span_time = create ~text "span" in
          Node.append_child span span_time
@@ -321,13 +332,13 @@ module TreeView = struct
       let reference = reference node in
       depth node <= 1 || proj node > 0.1 *. proj reference
     in
-    let children {Graph.sons; _} =
-      let children = ref [] in
+    let children {Graph.children; _} =
+      let sons = ref [] in
       List.iter
-        (fun id -> children := nodes.(id) :: !children)
-        sons;
+        (fun id -> sons := nodes.(id) :: !sons)
+        children;
       List.sort (fun node node' ->
-          compare (proj node') (proj node)) !children
+          compare (proj node') (proj node)) !sons
     in
     append render expand children inside root
 
@@ -384,4 +395,4 @@ let onload _ = begin
   Element.set_onclick filename_button filename_onclick;
   Helper.hide (Helper.element_of_id "main")
 end
-let () = Window.set_onload window onload
+let () = Window.set_onload GlobalVariables.window onload

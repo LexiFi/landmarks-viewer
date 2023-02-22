@@ -1,15 +1,19 @@
 (executable
   (name landmarks_viewer)
-  (js_of_ocaml
-     (flags --pretty --disable genprim)
-  )
   (libraries landmarks gen_js_api js_core)
-  (link_flags -no-check-prims)
   (preprocess (pps gen_js_api.ppx))
-  (modes byte)
+  (modes js)
+  (js_of_ocaml
+    (javascript_files extra_runtime.js)
+  )
 )
 
-(install 
+(rule
+  (action (copy landmarks_viewer.bc.js landmarks_viewer.js))
+  (mode promote)
+)
+
+(install
   (section lib)
   (package landmarks-viewer)
   (files (landmarks_viewer.bc.js as landmarks_viewer.js)

@@ -3,28 +3,28 @@
 (* Copyright 2016 by LexiFi.                                         *)
 
 module Kinds = struct
-  type unknown [@@js]
+  type unknown = Ojs.t [@@js]
   module Node = struct
-    type element [@@js]
-    type text [@@js]
-    type comment [@@js]
-    type processing_instruction_node [@@js]
-    type document [@@js]
-    type document_type [@@js]
-    type document_fragment [@@js]
-    type deprecated [@@js]
+    type element = Ojs.t [@@js]
+    type text = Ojs.t [@@js]
+    type comment = Ojs.t [@@js]
+    type processing_instruction_node = Ojs.t [@@js]
+    type document = Ojs.t [@@js]
+    type document_type = Ojs.t [@@js]
+    type document_fragment = Ojs.t [@@js]
+    type deprecated = Ojs.t [@@js]
   end
 
   module Html = struct
-    type body [@@js]
-    type input [@@js]
+    type body = Ojs.t [@@js]
+    type input = Ojs.t [@@js]
 
-    type table [@@js]
-    type tbody [@@js]
-    type td [@@js]
-    type th [@@js]
-    type thead [@@js]
-    type tr [@@js]
+    type table = Ojs.t [@@js]
+    type tbody = Ojs.t [@@js]
+    type td = Ojs.t [@@js]
+    type th = Ojs.t [@@js]
+    type thead = Ojs.t [@@js]
+    type tr = Ojs.t [@@js]
   end
 end
 
@@ -59,23 +59,23 @@ module Node : sig
     | `DocumentFragment of document_fragment t
     | `Deprecated of deprecated t ]
 end = struct
-  include ([%js] : sig
+  include ([%js :
              type untyped = private Ojs.t
              val untyped_of_js: Ojs.t -> untyped
              val untyped_to_js: untyped -> Ojs.t
 
-             val append_child: untyped -> untyped -> unit
-             val base_URI: untyped -> string
-             val clone_node: untyped -> untyped
-             val first_child: untyped -> untyped option
-             val has_child_nodes: untyped -> bool
-             val last_child: untyped -> untyped option
-             val node_type: untyped -> int
-             val remove_child: untyped -> untyped -> unit
+             val append_child: untyped -> untyped -> unit [@@js.call]
+             val base_URI: untyped -> string [@@js.get]
+             val clone_node: untyped -> untyped [@@js.get]
+             val first_child: untyped -> untyped option [@@js.get]
+             val has_child_nodes: untyped -> bool [@@js.get]
+             val last_child: untyped -> untyped option [@@js.get]
+             val node_type: untyped -> int [@@js.get]
+             val remove_child: untyped -> untyped -> unit [@@js.call]
 
-             val set_text_content: untyped -> string -> unit
-             val get_text_content: untyped -> string -> unit
-           end)
+             val set_text_content: untyped -> string -> unit [@@js.set]
+             val get_text_content: untyped -> string -> unit [@@js.call]
+           ])
   type 'a t = untyped
   let t_of_js _ x = untyped_of_js x
   let t_to_js _ x = untyped_to_js x
@@ -118,30 +118,29 @@ module Element : sig
   val unsafe_cast: 'a t -> 'b t
   val tag_name: 'a t -> string
 end = struct
-  include ([%js] :
-           sig
+  include [%js :
              type untyped = Kinds.Node.element Node.t
              val untyped_of_js: Ojs.t -> untyped
              val untyped_to_js: untyped -> Ojs.t
 
-             val has_attribute: untyped -> string -> bool
-             val set_attribute: untyped -> string -> string -> unit
-             val get_attribute: untyped -> string -> string
-             val remove_attribute: untyped -> string -> unit
+             val has_attribute: untyped -> string -> bool [@@js.call]
+             val set_attribute: untyped -> string -> string -> unit [@@js.call]
+             val get_attribute: untyped -> string -> string [@@js.call]
+             val remove_attribute: untyped -> string -> unit [@@js.call]
 
-             val set_class_name: untyped -> string -> unit
-             val get_class_name: untyped -> string
+             val set_class_name: untyped -> string -> unit [@@js.set]
+             val get_class_name: untyped -> string [@@js.get]
 
-             val set_innerHTML:  untyped -> string -> unit
-             val inner_HTML: untyped -> string
+             val set_innerHTML:  untyped -> string -> unit [@@js.set]
+             val inner_HTML: untyped -> string [@@js.get]
 
-             val set_outer_HTML: untyped -> string -> unit
-             val outer_HTML: untyped -> string
+             val set_outer_HTML: untyped -> string -> unit [@@js.set]
+             val outer_HTML: untyped -> string [@@js.get]
 
-             val set_onclick: untyped -> (unit -> unit) -> unit
-             val set_onmouseover: untyped -> (unit -> unit) -> unit
-             val tag_name: untyped -> string
-           end)
+             val set_onclick: untyped -> (unit -> unit) -> unit [@@js.set]
+             val set_onmouseover: untyped -> (unit -> unit) -> unit [@@js.set]
+             val tag_name: untyped -> string [@@js.get]
+           ]
   type 'a t = untyped
   let t_of_js _ x = untyped_of_js x
   let t_to_js _ x = untyped_to_js x
@@ -151,18 +150,18 @@ end
 module Document = struct
   type t = Kinds.Node.document Node.t [@@js]
 
-  include ([%js] : sig
-             val set_title: t -> string -> unit
-             val title: t -> string
+  include ([%js :
+             val set_title: t -> string -> unit [@@js.set]
+             val title: t -> string [@@js.get]
 
-             val get_element_by_id: t -> string -> unknown Element.t option
-             val get_elements_by_class_name: t -> string -> unknown Element.t array
+             val get_element_by_id: t -> string -> unknown Element.t option [@@js.call]
+             val get_elements_by_class_name: t -> string -> unknown Element.t array [@@js.call]
 
-             val create_element: t -> string -> unknown Element.t
-             val create_text_node: t -> string -> Kinds.Node.text Node.t
+             val create_element: t -> string -> unknown Element.t [@@js.call]
+             val create_text_node: t -> string -> Kinds.Node.text Node.t [@@js.call]
 
-             val body: t -> Kinds.Html.body Element.t
-           end)
+             val body: t -> Kinds.Html.body Element.t [@@js.get]
+           ])
 
   let create_html_input document =
     (create_element document "input"
@@ -187,59 +186,50 @@ module Document = struct
      |> Element.unsafe_cast : Kinds.Html.thead Element.t)
 end
 
-module Window : sig
+module Window = [%js :
   type t = private Ojs.t
 
   val t_of_js: Ojs.t -> t
   val t_to_js: t -> Ojs.t
 
-  val document: t -> Document.t
+  val document: t -> Document.t [@@js.get]
 
-  val set_onload: t -> (unit -> unit) -> unit
-end = [%js]
+  val set_onload: t -> (unit -> unit) -> unit [@@js.set]
+]
 
-val window: Window.t
-[@@js]
-
-val alert: string -> unit
-[@@js.global]
-
-module Console : sig
+module Console = [%js :
   type t = private Ojs.t
 
   val t_of_js: Ojs.t -> t
   val t_to_js: t -> Ojs.t
 
-  val log: t -> Ojs.t -> unit
+  val log: t -> Ojs.t -> unit [@@js.call]
 
   val log_string: t -> string -> unit
   [@@js.call "log"]
-end = [%js]
+]
 
-val console: Console.t
-[@@js]
-
-module JSON : sig
+module JSON = [%js :
   val parse: string -> Ojs.t
   [@@js.global "JSON.parse"]
   val stringify: Ojs.t -> string
   [@@js.global "JSON.stringify"]
-end = [%js]
+]
 
-module File : sig
+module File = [%js :
   type t = private Ojs.t
   val t_of_js: Ojs.t -> t
   val t_to_js: t -> Ojs.t
-  val name: t -> string
-end = [%js]
+  val name: t -> string [@@js.get]
+]
 
-module FileList : sig
+module FileList = [%js :
   type t = private Ojs.t
   val t_of_js: Ojs.t -> t
   val t_to_js: t -> Ojs.t
-  val item: t -> int -> File.t option
-  val length: t -> int
-end = [%js]
+  val item: t -> int -> File.t option [@@js.call]
+  val length: t -> int [@@js.get]
+]
 
 module FileReader = struct
   type state =
@@ -247,24 +237,24 @@ module FileReader = struct
     | Loading [@js 1]
     | Done [@js 2] [@@js] [@@js.enum]
 
-  include ([%js] : sig
+  include [%js :
              type t = private Ojs.t
              val t_of_js: Ojs.t -> t
              val t_to_js: t -> Ojs.t
              val new_file_reader : unit -> t [@@js.new]
-             val ready_state : t -> state
-             val result: t -> string option
-             val set_onload: t -> (unit -> unit) -> unit
-             val read_as_text: t -> File.t -> unit
-           end)
+             val ready_state : t -> state [@@js.get]
+             val result: t -> string option [@@js.get]
+             val set_onload: t -> (unit -> unit) -> unit [@@js.set]
+             val read_as_text: t -> File.t -> unit [@@js.call]
+           ]
 end
 
 module Html = struct
   module Input = struct
     type t = Kinds.Html.input Element.t [@@js]
-    include ([%js] : sig
-               val files: t -> FileList.t
-             end)
+    include ([%js :
+               val files: t -> FileList.t [@@js.get]
+             ])
   end
 
   let retype x =
@@ -278,3 +268,14 @@ module Html = struct
     | "thead" -> `Thead (Element.unsafe_cast x : Kinds.Html.thead Element.t)
     | _ -> `Unknown
 end
+
+module GlobalVariables = [%js :
+  val window: Window.t
+  [@@js.global]
+
+  val alert: string -> unit
+  [@@js.global]
+
+  val console: Console.t
+  [@@js.global]
+]
